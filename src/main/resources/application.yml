@@ -1,0 +1,68 @@
+server:
+  port: ${RANDOM_PORT:8222}  # 获取系统的环境变量
+  use-forward-headers: true
+  tomcat:
+    remote-ip-header: X-Real-IP
+    protocol-header: X-Forwarded-Proto
+  servlet:
+    context-path: /digital
+spring:
+  profiles:
+    active: dev
+  redis:
+    host: localhost # Redis服务器地址
+    database: 0 # Redis数据库索引（默认为0）
+    port: 6379 # Redis服务器连接端口
+    password: # Redis服务器连接密码（默认为空）
+    jedis:
+      pool:
+        max-active: 8 # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1ms # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 8 # 连接池中的最大空闲连接
+        min-idle: 0 # 连接池中的最小空闲连接
+    timeout: 3000ms # 连接超时时间（毫秒）
+  datasource:
+    # primary:
+    name: digital
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/digital?autoReconnect=true&connectTimeout=10000&socketTimeout=30000&useUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    #type: org.apache.commons.dbcp2.BasicDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    maxActive: 500
+  cloud:
+    client:
+      hostname: ${DEV_HOST}
+  aop:
+    auto: true
+    proxy-target-class: false
+  rabbitmq:
+    host: ${RABBIT_MQ_HOST:localhost}
+    port: ${RABBIT_MQ_PORT:5672}
+    virtual-host: /
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update  # 第一次建表create  后面用update,要不然每次重启都会新建表
+    show-sql: true #打印执行的sql语句
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect #设置数据库方言  记住必须要使用 MySQL5InnoDBDialect 指定数据库类型对应InnoDB  ;如果使用MySQLDialect 则对应的是MyISAM
+logging:
+  config: classpath:logback.xml
+#mqtt-clientid
+tcp:
+  host: tcp://127.0.0.1:7788
+mqtt-configs:
+  clients:
+#    - clientId: 62d50a5a4c7c4e3646bb4a9d_kaifa_0_0_2022112302
+#      userName: 62d50a5a4c7c4e3646bb4a9d_kaifa
+#      password: 1cb2e435f193e39d3cb35b2214c6620e8236e53c8bc45216e7f8a34c31233bd2
+#    - clientId: 62d50a5a4c7c4e3646bb4a9d_xxhm001_0_0_2022112303
+#      userName: 62d50a5a4c7c4e3646bb4a9d_xxhm001
+#      password: 7b088e0e5e62da1c236f34665ce47461ab257d4d77706a2dd1d50b3d796ec76e
+#    - clientId: 62d50a5a4c7c4e3646bb4a9d_client_kaiguan_0_0_2022112305
+#      userName: 62d50a5a4c7c4e3646bb4a9d_client_kaiguan
+#      password: 85e0a36f6fda801980f2d4f5c3fba3f5a08a31a8a1d924ca3bf0009a814bbdeb
+    - clientId: 62d50a5a4c7c4e3646bb4a9d_client_kaiguan_0_0_2022112305
+      userName: admin
+      password: root

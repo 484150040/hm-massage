@@ -1,0 +1,149 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>hm-digital-twin</artifactId>
+    <groupId>hm-digital-twin</groupId>
+    <version>1.0.0</version>
+    <relativePath>../hm-digital-twin/pom.xml</relativePath>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>hm-massage</artifactId>
+  <packaging>war</packaging>
+  <!-- TODO project name  -->
+  <name>hm-massage</name>
+
+<dependencies>
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+  <groupId>com.alibaba.cloud</groupId>
+  <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+  <version>2.1.1.RELEASE</version>
+</dependency>
+
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-aop</artifactId>
+  <exclusions>
+    <exclusion>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-logging</artifactId>
+    </exclusion>
+  </exclusions>
+</dependency>
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-undertow</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+<dependency>
+  <groupId>com.github.ulisesbocchio</groupId>
+  <artifactId>jasypt-spring-boot-starter</artifactId>
+  <version>1.18</version>
+</dependency>
+
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-cache</artifactId>
+</dependency>
+
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-jdbc</artifactId>
+</dependency>
+<dependency>
+  <groupId>mysql</groupId>
+  <artifactId>mysql-connector-java</artifactId>
+</dependency>
+<dependency>
+  <groupId>commons-codec</groupId>
+  <artifactId>commons-codec</artifactId>
+  <version>1.15</version>
+</dependency>
+<dependency>
+  <groupId>org.projectlombok</groupId>
+  <artifactId>lombok</artifactId>
+</dependency>
+<dependency>
+  <groupId>com.github.pagehelper</groupId>
+  <artifactId>pagehelper</artifactId>
+  <version>5.0.0</version>
+</dependency>
+<dependency>
+  <groupId>hm-interface</groupId>
+  <artifactId>hm-interface</artifactId>
+  <version>1.0.0</version>
+</dependency>
+<dependency>
+  <groupId>hm-common</groupId>
+  <artifactId>hm-common</artifactId>
+  <version>1.0.0</version>
+</dependency>
+<dependency>
+  <groupId>com.dahuatech.icc</groupId>
+  <artifactId>java-sdk-common</artifactId>
+  <version>1.0.9</version>
+  <scope>compile</scope>
+</dependency>
+  <!--mqtt-->
+  <dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-mqtt</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-configuration-processor</artifactId>
+    <optional>true</optional>
+  </dependency>
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-amqp</artifactId>
+  </dependency>
+</dependencies>
+<build>
+<!--suppress UnresolvedMavenProperty -->
+<finalName>${project.artifactId}.${project.version}.${git.branch}.${git.commit.id.abbrev}</finalName>
+<resources>
+  <resource>
+    <directory>${basedir}src/main/webapp/WEB-INF/lib</directory>
+    <targetPath>BOOT-INF/lib/</targetPath>
+    <includes>
+      <include>**/*.jar</include>
+    </includes>
+  </resource>
+  <resource>
+    <directory>${basedir}/src/main/resources</directory>
+    <targetPath>BOOT-INF/classes</targetPath>
+    <includes>
+      <include>**.yml</include>
+      <include>**.txt</include>
+    </includes>
+  </resource>
+  <resource>
+    <directory>${basedir}/src/main/resources</directory>
+    <targetPath>${basedir}/target/classes/</targetPath>
+  </resource>
+</resources>
+<plugins>
+  <plugin>
+    <groupId>pl.project13.maven</groupId>
+    <artifactId>git-commit-id-plugin</artifactId>
+    <executions>
+      <execution>
+        <goals>
+          <goal>revision</goal>
+        </goals>
+      </execution>
+    </executions>
+  </plugin>
+</plugins>
+</build>
+
+</project>
