@@ -1,4 +1,4 @@
-package com.hm.digital.twin.listener;
+package com.hm.digital.massage.listener;
 
 import java.util.List;
 
@@ -8,10 +8,10 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import com.hm.digital.twin.dto.MqttConfig;
-import com.hm.digital.twin.dto.MqttDo;
-import com.hm.digital.twin.util.Callback;
-import com.hm.digital.twin.util.MQTTConnect;
+import com.hm.digital.massage.dto.MqttConfig;
+import com.hm.digital.massage.dto.MqttDo;
+import com.hm.digital.massage.util.Callback;
+import com.hm.digital.massage.util.MQTTConnect;
 
 import lombok.extern.slf4j.Slf4j;
 

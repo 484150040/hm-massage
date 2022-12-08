@@ -1,4 +1,4 @@
-package com.hm.digital.twin.listener;
+package com.hm.digital.massage.listener;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -8,9 +8,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.hm.digital.twin.config.RabbitDirectConfig;
-import com.hm.digital.twin.util.Callback;
-import com.hm.digital.twin.util.MQTTConnect;
+import com.hm.digital.massage.config.RabbitDirectConfig;
+import com.hm.digital.massage.util.Callback;
+import com.hm.digital.massage.util.MQTTConnect;
 
 @Component
 public class TopicConsumer {

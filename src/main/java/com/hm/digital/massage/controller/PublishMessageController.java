@@ -1,4 +1,4 @@
-package com.hm.digital.twin.controller;
+package com.hm.digital.massage.controller;
 
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hm.digital.twin.config.RabbitDirectConfig;
+import com.hm.digital.massage.config.RabbitDirectConfig;
 
 @RestController
 public class PublishMessageController {

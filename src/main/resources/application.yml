@@ -5,7 +5,7 @@ server:
     remote-ip-header: X-Real-IP
     protocol-header: X-Forwarded-Proto
   servlet:
-    context-path: /digital
+    context-path: /massage
 spring:
   profiles:
     active: dev

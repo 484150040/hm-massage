@@ -1,4 +1,4 @@
-package com.hm.digital.twin.util;
+package com.hm.digital.massage.util;
 
 
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.hm.digital.twin.config;
+package com.hm.digital.massage.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

@@ -1,4 +1,4 @@
-package com.hm.digital.twin.dto;
+package com.hm.digital.massage.dto;
 
 import java.util.List;
 
