@@ -27,6 +27,7 @@ public class MQTTListener implements ApplicationListener<ContextRefreshedEvent> 
 
   private final MQTTConnect server;
 
+  private static boolean isture;
   @Autowired
   private MqttConfig mqttConfig;
   @Autowired
@@ -37,11 +38,15 @@ public class MQTTListener implements ApplicationListener<ContextRefreshedEvent> 
   @Override
   public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
     try {
+      if (isture){
+        return;
+      }
       List<MqttDo> list = mqttConfig.getClients();
       for (MqttDo mqttDo : list) {
         server.setMqttClient(mqttDo.getClientId(),mqttDo.getUserName(), mqttDo.getPassword(), new Callback());
+        isture=true;
       }
-      server.sub("com/iot/init");
+//      server.sub("com/iot/init");
     } catch (MqttException e) {
       log.error(e.getMessage(), e);
     }
