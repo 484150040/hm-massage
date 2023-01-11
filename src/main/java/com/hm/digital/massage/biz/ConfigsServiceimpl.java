@@ -38,7 +38,7 @@ public class ConfigsServiceimpl implements ConfigsService {
     return configMapper.getOne(id);
   }
   @Override
-  public Config updete(Config config) {
+  public Config save(Config config) {
     return configMapper.save(config);
   }
 }
