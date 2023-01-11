@@ -10,14 +10,15 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hm.digital.common.enums.ConfigEnum;
 import com.hm.digital.inface.biz.ConfigsService;
 import com.hm.digital.inface.entity.Config;
 import com.hm.digital.massage.dto.MqttDo;
 import com.hm.digital.massage.util.Callback;
+import com.hm.digital.massage.util.CallbackDH;
 import com.hm.digital.massage.util.MQTTConnect;
+import com.hm.digital.massage.util.MQTTConnectDH;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,31 +30,14 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
-public class MQTTListener implements ApplicationListener<ContextRefreshedEvent> {
+public class MQTTDHListener implements ApplicationListener<ContextRefreshedEvent> {
 
-  private final MQTTConnect server;
+  private final MQTTConnectDH server;
 
   private static boolean isture;
 
-  private static List<MqttDo> list;
-
   @Autowired
-  public ConfigsService configsServices;
-  @PostConstruct
-  public void init() {
-    list = JSONObject
-        .parseArray(configsServices.getValue(getCofig(ConfigEnum.MQTT_CONFIGS_CLIENTS.getKey())).get(0).getValue(),
-            MqttDo.class);
-  }
-
-  private Config getCofig(String config) {
-    Config configVO = new Config();
-    configVO.setType(config);
-    configVO.setUniverse("1");
-    return configVO;
-  }
-  @Autowired
-  public MQTTListener(MQTTConnect server) {
+  public MQTTDHListener(MQTTConnectDH server) {
     this.server = server;
   }
 
@@ -63,10 +47,7 @@ public class MQTTListener implements ApplicationListener<ContextRefreshedEvent> 
       if (isture) {
         return;
       }
-      for (MqttDo mqttDo : list) {
-        server.setMqttClient(mqttDo.getClientId(), mqttDo.getUserName(), mqttDo.getPassword(), new Callback());
-        isture = true;
-      }
+      server.setMqttClient("62d50a5a4c7c4e3646bb4a9d2023012302",  new CallbackDH());
 //      server.sub("com/iot/init");
     } catch (MqttException e) {
       log.error(e.getMessage(), e);

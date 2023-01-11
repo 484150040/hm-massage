@@ -7,6 +7,20 @@ server:
   servlet:
     context-path: /massage
 spring:
+  gateway:
+    globalcors:  #全局的跨域处理
+      add-to-simple-url-handler-mapping: true  #解决options请求被拦截问题
+      corsConfigurations:
+        '[/**]':
+          allowedHeaders: "*"   # 允许在请求头中携带的头信息
+          allowedOrigins: "*"
+          maxAge: 360000 # 这次跨域检测有效期
+          allowedMethods:
+            - GET
+            - POST
+            - DELETE
+            - PUT
+            - OPTION
   profiles:
     active: dev
   redis:
@@ -55,10 +69,10 @@ spring:
 logging:
   config: classpath:logback.xml
 #mqtt-clientid
-tcp:
-  host: tcp://127.0.0.1:7788
-mqtt-configs:
-  clients:
+#tcp:
+#  host: tcp://127.0.0.1:7788
+#mqtt-configs:
+#  clients:
 #    - clientId: 62d50a5a4c7c4e3646bb4a9d_kaifa_0_0_2022112302
 #      userName: 62d50a5a4c7c4e3646bb4a9d_kaifa
 #      password: 1cb2e435f193e39d3cb35b2214c6620e8236e53c8bc45216e7f8a34c31233bd2
@@ -68,15 +82,15 @@ mqtt-configs:
 #    - clientId: 62d50a5a4c7c4e3646bb4a9d_client_kaiguan_0_0_2022112305
 #      userName: 62d50a5a4c7c4e3646bb4a9d_client_kaiguan
 #      password: 85e0a36f6fda801980f2d4f5c3fba3f5a08a31a8a1d924ca3bf0009a814bbdeb
-    - clientId: 62d50a5a4c7c4e3646bb4a9d2022112307
-      userName: admin
-      password: admin
-zh:
-  startTime: 2019-01-01
-  httpGetList: http://newings.tech:8099/dataStatistics/getList
-  httpGetCount: http://newings.tech:8099/dataStatistics/getCount
-  httpGetChart: http://newings.tech:8099/dataStatistics/getChart
-  httpGetChartOrecle: http://newings.tech:8001/dataStatistics/getChart
-  electronicCall: http://newings.tech:8888/jc/rollcall/findByPrisonIdAndType
-  electronicCallStart: http://newings.tech:8888/jc/rollcall/start
-  alarmOrder: http://newings.tech:8090/ephod-server-20221028v1/alarmOrder/alarmQuantityAnalysis
+#    - clientId: 62d50a5a4c7c4e3646bb4a9d2022112307
+#      userName: admin
+#      password: admin
+#zh:
+#  startTime: 2019-01-01
+#  httpGetList: http://newings.tech:8099/dataStatistics/getList
+#  httpGetCount: http://newings.tech:8099/dataStatistics/getCount
+#  httpGetChart: http://newings.tech:8099/dataStatistics/getChart
+#  httpGetChartOrecle: http://newings.tech:8001/dataStatistics/getChart
+#  electronicCall: http://newings.tech:8888/jc/rollcall/findByPrisonIdAndType
+#  electronicCallStart: http://newings.tech:8888/jc/rollcall/start
+#  alarmOrder: http://newings.tech:8090/ephod-server-20221028v1/alarmOrder/alarmQuantityAnalysis

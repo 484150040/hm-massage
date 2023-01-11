@@ -1,6 +1,8 @@
 package com.hm.digital.massage.util;
 
 
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -12,8 +14,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.hm.digital.common.enums.ConfigEnum;
 import com.hm.digital.common.utils.ResultData;
@@ -21,6 +23,8 @@ import com.hm.digital.inface.biz.ConfigsService;
 import com.hm.digital.inface.entity.Config;
 
 import lombok.extern.slf4j.Slf4j;
+
+import static com.hm.digital.common.utils.HttpClientUtil.objectToMap;
 
 /**
  * MQTT工具类操作
@@ -30,18 +34,33 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
-public class MQTTConnect {
+public class MQTTConnectDH {
 
   //  private String HOST = "tcp://121.36.42.100:1883"; //mqtt服务器的地址和端口号
 //  @Value("${tcp.host}")
   private static String HOST; //mqtt服务器的地址和端口号
+
+  private static String USER_NAME; //mqtt服务器的账户
+
+  private static String PASSWORD; //mqtt服务器的密码
+
   private MqttClient mqttClient;
 
   @Autowired
   public ConfigsService configsServices;
+
   @PostConstruct
   public void init() {
-    HOST = configsServices.getValue(getCofig(ConfigEnum.TCP_HOST.getKey())).get(0).getValue();
+    Map<String, Object> map = objectToMap(configsServices.getValue(getCofig(ConfigEnum.TCP_HOST.getKey())).get(0).getValue());
+    if (!CollectionUtils.isEmpty(map)){
+      String address = String.valueOf(map.get("address"));
+      String password = String.valueOf(map.get("password"));
+      String port = String.valueOf(map.get("port"));
+      String username = String.valueOf(map.get("username"));
+      HOST = address + ":" + port;
+      USER_NAME = username;
+      PASSWORD = password;
+    }
   }
 
   private Config getCofig(String config) {
@@ -54,15 +73,13 @@ public class MQTTConnect {
   /**
    * 客户端connect连接mqtt服务器
    *
-   * @param userName     用户名
-   * @param passWord     密码
    * @param mqttCallback 回调函数
    **/
-  public void setMqttClient(String clientId, String userName, String passWord, MqttCallback mqttCallback)
+  public void setMqttClient(String clientId, MqttCallback mqttCallback)
       throws MqttException {
-    MqttConnectOptions options = mqttConnectOptions(userName, passWord, clientId);
+    MqttConnectOptions options = mqttConnectOptions(USER_NAME, PASSWORD, clientId);
     if (mqttCallback == null) {
-      mqttClient.setCallback(new Callback());
+      mqttClient.setCallback(new CallbackDH());
     } else {
       mqttClient.setCallback(mqttCallback);
     }
@@ -147,8 +164,8 @@ public class MQTTConnect {
    * main函数自己测试用
    */
   public static void main(String[] args) throws MqttException {
-    MQTTConnect mqttConnect = new MQTTConnect();
-    mqttConnect.setMqttClient("sensor", "admin", "root", new Callback());
+    MQTTConnectDH mqttConnect = new MQTTConnectDH();
+    mqttConnect.setMqttClient("sensor",  new CallbackDH());
     mqttConnect.sub("sensor");
     mqttConnect.pub("sensor", ResultData.success().getMessage());
   }

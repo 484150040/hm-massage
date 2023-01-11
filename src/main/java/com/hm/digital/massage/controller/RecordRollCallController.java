@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,14 +32,29 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RecordRollCallController extends BaseController<RecordRollCallMapper, RecordRollCall> {
 
-  @Value("${zh.httpGetChart}")
-  private String httpGetChart;
+//  @Value("${zh.httpGetChart}")
+  private static String httpGetChart;
 
-  @Value("${zh.electronicCallStart}")
-  private String electronicCallStart;
+//  @Value("${zh.electronicCallStart}")
+  private static String electronicCallStart;
 
   @Autowired
   private ConfigsService configsService;
+
+  @Autowired
+  public ConfigsService configsServices;
+  @PostConstruct
+  public void init() {
+    electronicCallStart =  configsServices.getValue(getCofig(ConfigEnum.ZH_ELECTRONICCALLSTART.getKey())).get(0).getValue();
+    httpGetChart =  configsServices.getValue(getCofig(ConfigEnum.ZH_HTTPGETCHART.getKey())).get(0).getValue();
+  }
+
+  private Config getCofig(String config) {
+    Config configVO = new Config();
+    configVO.setType(config);
+    configVO.setUniverse("1");
+    return configVO;
+  }
 
   /**
    * 发起点名
@@ -58,7 +75,7 @@ public class RecordRollCallController extends BaseController<RecordRollCallMappe
     String dormCode [] = dormCodes.split(",");
     Config config = configsService.getValue(ConfigEnum.ROLL_CALL.getKey(), prisonId).get(0);
     config.setValue(String.valueOf(Integer.valueOf(config.getValue()) + 1));
-    configsService.updete(config);
+    configsService.save(config);
     for (Statistical list : lists) {
       for (String s : dormCode) {
         if (list.getNAME().equals(s)){

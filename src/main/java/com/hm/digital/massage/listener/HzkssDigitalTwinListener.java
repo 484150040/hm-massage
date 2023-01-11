@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -46,12 +48,12 @@ import lombok.SneakyThrows;
 @Component
 public class HzkssDigitalTwinListener extends BaseController<MqRollCallMapper, MqRollCall> {
 
-  @Value("${zh.httpGetChart}")
-  private String httpGetChart;
+//  @Value("${zh.httpGetChart}")
+  private static String httpGetChart;
 
 
-  @Value("${zh.electronicCall}")
-  private String electronicCall;
+//  @Value("${zh.electronicCall}")
+  private static String electronicCall;
 
   @Autowired
   private MQTTConnect mqttConnect;
@@ -65,6 +67,21 @@ public class HzkssDigitalTwinListener extends BaseController<MqRollCallMapper, M
   @Autowired
   private RecordRollCallService recordRollCallService;
 
+
+  @Autowired
+  public ConfigsService configsServices;
+  @PostConstruct
+  public void init() {
+    electronicCall =  configsServices.getValue(getCofig(ConfigEnum.ZH_ELECTRONICCALL.getKey())).get(0).getValue();
+    httpGetChart =  configsServices.getValue(getCofig(ConfigEnum.ZH_HTTPGETCHART.getKey())).get(0).getValue();
+  }
+
+  private Config getCofig(String config) {
+    Config configVO = new Config();
+    configVO.setType(config);
+    configVO.setUniverse("1");
+    return configVO;
+  }
   /**
    * 点名刷卡
    *
@@ -127,12 +144,15 @@ public class HzkssDigitalTwinListener extends BaseController<MqRollCallMapper, M
         }
       }
       if (result) {
+        Thread.sleep(1000);
         Map<String, Object> maps = getResult("即时", message.getPrisonId());
         mqttConnect.pub("personResult", JSON.toJSONString(maps));
         String jobClassName = "com.hm.digital.clocking.job.RollCallJob";
         quartzFeignBiz.deletejob(jobClassName, message.getPrisonId());
       }
     } catch (MqttException e) {
+      e.printStackTrace();
+    } catch (InterruptedException e) {
       e.printStackTrace();
     }
     System.out.println(JSON.toJSONString(map));
