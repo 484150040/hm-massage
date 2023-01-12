@@ -32,10 +32,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RecordRollCallController extends BaseController<RecordRollCallMapper, RecordRollCall> {
 
-//  @Value("${zh.httpGetChart}")
+  //  @Value("${zh.httpGetChart}")
   private static String httpGetChart;
 
-//  @Value("${zh.electronicCallStart}")
+  //  @Value("${zh.electronicCallStart}")
   private static String electronicCallStart;
 
   @Autowired
@@ -45,8 +45,14 @@ public class RecordRollCallController extends BaseController<RecordRollCallMappe
   public ConfigsService configsServices;
   @PostConstruct
   public void init() {
-    electronicCallStart =  configsServices.getValue(getCofig(ConfigEnum.ZH_ELECTRONICCALLSTART.getKey())).get(0).getValue();
-    httpGetChart =  configsServices.getValue(getCofig(ConfigEnum.ZH_HTTPGETCHART.getKey())).get(0).getValue();
+    try {
+      electronicCallStart = configsServices.getValue(getCofig(ConfigEnum.ZH_ELECTRONICCALLSTART.getKey())).get(0)
+          .getValue();
+      httpGetChart = configsServices.getValue(getCofig(ConfigEnum.ZH_HTTPGETCHART.getKey())).get(0).getValue();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return;
+    }
   }
 
   private Config getCofig(String config) {
@@ -64,7 +70,7 @@ public class RecordRollCallController extends BaseController<RecordRollCallMappe
   @SneakyThrows
   @RequestMapping("/start")
   @ExceptionHandler(value = BaseException.class)
-  public String start(String prisonId,String dormCodes) {
+  public String start(String prisonId, String dormCodes) {
     //查询每个监室所有数据
     Map<String, String> parametersRed = new HashMap<>();
     parametersRed.put("item", InputParameterEnum.DORM_CODE_PRISON_CHART.getKey());
@@ -72,13 +78,13 @@ public class RecordRollCallController extends BaseController<RecordRollCallMappe
     String responseRed = HttpClientUtil.sendGet(httpGetChart, parametersRed);
     responseRed = responseRed.replaceAll("jsh", "NAME");
     List<Statistical> lists = JSONObject.parseArray(responseRed, Statistical.class);
-    String dormCode [] = dormCodes.split(",");
+    String dormCode[] = dormCodes.split(",");
     Config config = configsService.getValue(ConfigEnum.ROLL_CALL.getKey(), prisonId).get(0);
     config.setValue(String.valueOf(Integer.valueOf(config.getValue()) + 1));
     configsService.save(config);
     for (Statistical list : lists) {
       for (String s : dormCode) {
-        if (list.getNAME().equals(s)){
+        if (list.getNAME().equals(s)) {
           RecordRollCall recordRol = new RecordRollCall();
           recordRol.setDormCode(s);
           recordRol.setPrisonId(prisonId);

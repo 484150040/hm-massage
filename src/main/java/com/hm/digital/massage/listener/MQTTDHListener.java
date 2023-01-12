@@ -34,8 +34,6 @@ public class MQTTDHListener implements ApplicationListener<ContextRefreshedEvent
 
   private final MQTTConnectDH server;
 
-  private static boolean isture;
-
   @Autowired
   public MQTTDHListener(MQTTConnectDH server) {
     this.server = server;
@@ -44,9 +42,6 @@ public class MQTTDHListener implements ApplicationListener<ContextRefreshedEvent
   @Override
   public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
     try {
-      if (isture) {
-        return;
-      }
       server.setMqttClient("62d50a5a4c7c4e3646bb4a9d2023012302",  new CallbackDH());
 //      server.sub("com/iot/init");
     } catch (MqttException e) {

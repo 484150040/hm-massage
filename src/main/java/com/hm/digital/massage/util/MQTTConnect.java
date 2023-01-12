@@ -41,7 +41,12 @@ public class MQTTConnect {
   public ConfigsService configsServices;
   @PostConstruct
   public void init() {
-    HOST = configsServices.getValue(getCofig(ConfigEnum.TCP_HOST.getKey())).get(0).getValue();
+    try {
+      HOST = configsServices.getValue(getCofig(ConfigEnum.TCP_HOST.getKey())).get(0).getValue();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return;
+    }
   }
 
   private Config getCofig(String config) {

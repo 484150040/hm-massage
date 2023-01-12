@@ -72,8 +72,14 @@ public class HzkssDigitalTwinListener extends BaseController<MqRollCallMapper, M
   public ConfigsService configsServices;
   @PostConstruct
   public void init() {
-    electronicCall =  configsServices.getValue(getCofig(ConfigEnum.ZH_ELECTRONICCALL.getKey())).get(0).getValue();
-    httpGetChart =  configsServices.getValue(getCofig(ConfigEnum.ZH_HTTPGETCHART.getKey())).get(0).getValue();
+    try {
+      electronicCall =  configsServices.getValue(getCofig(ConfigEnum.ZH_ELECTRONICCALL.getKey())).get(0).getValue();
+      httpGetChart =  configsServices.getValue(getCofig(ConfigEnum.ZH_HTTPGETCHART.getKey())).get(0).getValue();
+    }catch (Exception e){
+      e.printStackTrace();
+      return;
+    }
+
   }
 
   private Config getCofig(String config) {

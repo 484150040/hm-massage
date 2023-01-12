@@ -16,6 +16,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.hm.digital.common.enums.ConfigEnum;
 import com.hm.digital.common.utils.ResultData;
@@ -24,6 +25,7 @@ import com.hm.digital.inface.entity.Config;
 
 import lombok.extern.slf4j.Slf4j;
 
+import static com.hm.digital.common.utils.HttpClientUtil.json2map;
 import static com.hm.digital.common.utils.HttpClientUtil.objectToMap;
 
 /**
@@ -51,16 +53,24 @@ public class MQTTConnectDH {
 
   @PostConstruct
   public void init() {
-    Map<String, Object> map = objectToMap(configsServices.getValue(getCofig(ConfigEnum.TCP_HOST.getKey())).get(0).getValue());
-    if (!CollectionUtils.isEmpty(map)){
-      String address = String.valueOf(map.get("address"));
-      String password = String.valueOf(map.get("password"));
-      String port = String.valueOf(map.get("port"));
-      String username = String.valueOf(map.get("username"));
-      HOST = address + ":" + port;
-      USER_NAME = username;
-      PASSWORD = password;
+    try {
+      Map<String, Object> map = json2map(
+          configsServices.getValue(getCofig(ConfigEnum.HANGAR_CONFIGURATION.getKey())).get(0).getValue());
+      if (!CollectionUtils.isEmpty(map)) {
+        String address = String.valueOf(map.get("address"));
+        String password = String.valueOf(map.get("password"));
+        Integer port = Integer.valueOf(map.get("port").toString().split(".0")[0]);
+        String username = String.valueOf(map.get("username"));
+        HOST = "tcp://" + address + ":" + port;
+        USER_NAME = username;
+        PASSWORD = password;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      return;
+
     }
+
   }
 
   private Config getCofig(String config) {
@@ -77,6 +87,9 @@ public class MQTTConnectDH {
    **/
   public void setMqttClient(String clientId, MqttCallback mqttCallback)
       throws MqttException {
+    if (StringUtils.isEmpty(HOST)) {
+      return;
+    }
     MqttConnectOptions options = mqttConnectOptions(USER_NAME, PASSWORD, clientId);
     if (mqttCallback == null) {
       mqttClient.setCallback(new CallbackDH());
@@ -165,7 +178,7 @@ public class MQTTConnectDH {
    */
   public static void main(String[] args) throws MqttException {
     MQTTConnectDH mqttConnect = new MQTTConnectDH();
-    mqttConnect.setMqttClient("sensor",  new CallbackDH());
+    mqttConnect.setMqttClient("sensor", new CallbackDH());
     mqttConnect.sub("sensor");
     mqttConnect.pub("sensor", ResultData.success().getMessage());
   }
