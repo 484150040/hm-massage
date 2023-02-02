@@ -54,8 +54,13 @@ public class MQTTConnectDH {
   @PostConstruct
   public void init() {
     try {
+      Config config = configsServices.getValue(getCofig(ConfigEnum.HANGAR_CONFIGURATION.getKey())).get(0);
+      if (config.getStatus()<2){
+        config.setStatus(2);
+        configsServices.save(config);
+      }
       Map<String, Object> map = json2map(
-          configsServices.getValue(getCofig(ConfigEnum.HANGAR_CONFIGURATION.getKey())).get(0).getValue());
+          config.getValue());
       if (!CollectionUtils.isEmpty(map)) {
         String address = String.valueOf(map.get("address"));
         String password = String.valueOf(map.get("password"));

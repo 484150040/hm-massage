@@ -42,8 +42,13 @@ public class MQTTListener implements ApplicationListener<ContextRefreshedEvent> 
   @PostConstruct
   public void init() {
     try {
+      Config config = configsServices.getValue(getCofig(ConfigEnum.MQTT_CONFIGS_CLIENTS.getKey())).get(0);
+      if (config.getStatus()<2){
+        config.setStatus(2);
+        configsServices.save(config);
+      }
       list = JSONObject
-          .parseArray(configsServices.getValue(getCofig(ConfigEnum.MQTT_CONFIGS_CLIENTS.getKey())).get(0).getValue(),
+          .parseArray(config.getValue(),
               MqttDo.class);
     } catch (Exception e) {
       e.printStackTrace();

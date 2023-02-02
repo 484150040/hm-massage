@@ -54,7 +54,12 @@ public class HzkssDigitalTwinController extends BaseController<MqRollCallMapper,
   @PostConstruct
   public void init() {
     try {
-      electronicCall = configsServices.getValue(getCofig(ConfigEnum.ZH_ELECTRONICCALL.getKey())).get(0).getValue();
+      Config config = configsServices.getValue(getCofig(ConfigEnum.ZH_ELECTRONICCALL.getKey())).get(0);
+      if (config.getStatus()<2){
+        config.setStatus(2);
+        configsServices.save(config);
+      }
+      electronicCall = config.getValue();
     } catch (Exception e) {
       e.printStackTrace();
       return;

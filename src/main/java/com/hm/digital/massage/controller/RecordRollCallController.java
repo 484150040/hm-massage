@@ -46,9 +46,19 @@ public class RecordRollCallController extends BaseController<RecordRollCallMappe
   @PostConstruct
   public void init() {
     try {
-      electronicCallStart = configsServices.getValue(getCofig(ConfigEnum.ZH_ELECTRONICCALLSTART.getKey())).get(0)
+      Config config = configsServices.getValue(getCofig(ConfigEnum.ZH_ELECTRONICCALLSTART.getKey())).get(0);
+      Config config1 = configsServices.getValue(getCofig(ConfigEnum.ZH_HTTPGETCHART.getKey())).get(0);
+      if (config.getStatus()<2){
+        config.setStatus(2);
+        configsServices.save(config);
+      }
+      if (config1.getStatus()<2){
+        config1.setStatus(2);
+        configsServices.save(config1);
+      }
+      electronicCallStart = config
           .getValue();
-      httpGetChart = configsServices.getValue(getCofig(ConfigEnum.ZH_HTTPGETCHART.getKey())).get(0).getValue();
+      httpGetChart = config1.getValue();
     } catch (Exception e) {
       e.printStackTrace();
       return;
